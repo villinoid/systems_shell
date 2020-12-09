@@ -7,7 +7,7 @@
 int main(){
 	printf("\n");
 	char input_buffer[1000];
-	char* args[100];
+	char** args;
 	while(1){
 		fgets(input_buffer,sizeof(input_buffer),stdin);
 		args=parse_args(input_buffer);
