@@ -9,6 +9,7 @@ char **parse_args(char *line) //Ex: "ls -a -f"
 	char **return_args = malloc(sizeof(char) * strlen(line)); //Five args plus ending NULL
 	char *s, *b;
 	s = line;
+	s[strlen(s)-1]=NULL;
 
 	int i = 0;
 	while (s)
@@ -21,7 +22,6 @@ char **parse_args(char *line) //Ex: "ls -a -f"
 		//printf("strlen: %d\n",strlen(s));
 		//printf("END\n");
 	}
-	return_args[i]=0;
 
 	return return_args;
 }
