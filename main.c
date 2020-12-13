@@ -13,16 +13,20 @@ int main(){
 	int i;
 	int finished,status;
 	while(1){
+		printf("$ - ");
 		fgets(input_buffer,sizeof(input_buffer),stdin);
-		printf("%s",input_buffer);
+		//printf("%s",input_buffer);
 		args=parse_args(input_buffer);
 		//Check what type it is
 		//exit
 		if(!strcmp(args[0],"exit"))
 			return 0;
-		//CD
-		if(!strcmp(args[0],"cd"))
+		//cd
+		if(!strcmp(args[0],"cd")){
+			if(!args[1])
+				printf("No args inputted for cd\n");//PERHAPS GO HOME?
 			chdir(args[1]);
+			}
 		else{
 		//Redirct
 
