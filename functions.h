@@ -3,5 +3,5 @@
 #include <unistd.h>
 #include <string.h>
 
-char **parse_args(char *);
+char **parse_args(char *, char);
 int main_exec(char *);

@@ -8,17 +8,20 @@
 
 //Return -1 = exit shell
 
-char **parse_args(char *line) //Ex: "ls -a -f"
+
+//need to remove \n before
+char **parse_args(char *line, char separator) //Ex: "ls -a -f"
 {
 	char **return_args = malloc(sizeof(char) * strlen(line));
+	
 	char *s, *b;
 	s = line;
-	s[strlen(s)-1]=0;
+	
 	//printf("s: %s\n",s);
 	int i = 0;
 	while (s)
 	{
-		return_args[i] = strsep(&s, " ");
+		return_args[i] = strsep(&s, &separator);
 		i++;
 	}
 	return_args[i]=NULL;
@@ -28,10 +31,9 @@ char **parse_args(char *line) //Ex: "ls -a -f"
 
 int main_exec(char * in_string){
 	char** args;
-	int i;
-	int finished,status;
+	int i,finished,status;
 
-	args=parse_args(in_string);
+	args=parse_args(in_string, ' ');
 
 
 		

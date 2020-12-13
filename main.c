@@ -10,6 +10,8 @@ int main(){
 	char input_buffer[1000];
 	char curr_dir[100];
 	int exec_return;
+	char** funcs;
+	int i;
 	
 	while(1){
 		
@@ -18,12 +20,20 @@ int main(){
 
 		
 		fgets(input_buffer,sizeof(input_buffer),stdin);
+		input_buffer[strlen(input_buffer)-1]=0; //Eliminate \n after fgets
 
+		//rintf("test\n");
+		funcs=parse_args(input_buffer,';');
+		i=0;
+		while(funcs[i]){
+		
 		exec_return=0;
-		exec_return=main_exec(input_buffer);
+		exec_return=main_exec(funcs[i]);
+		i++;
 		if(exec_return==-1)
 			return 0;
 
+		}
 
 		//PARSE DIVIDE BY ;
 
