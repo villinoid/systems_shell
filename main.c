@@ -7,16 +7,30 @@
 #include <sys/wait.h>
 
 int main(){
-	printf("\n");
 	char input_buffer[1000];
-	char** args;
-	int i;
-	int finished,status;
+	char curr_dir[100];
+	
 	while(1){
-		printf("$ - ");
+		
+		getcwd(curr_dir,99);
+		printf("%s - $ ",curr_dir);
+
+		
 		fgets(input_buffer,sizeof(input_buffer),stdin);
-		//printf("%s",input_buffer);
+
+
+		main_exec(input_buffer);
+
+
+		//PARSE DIVIDE BY ;
+
+
+		/*
 		args=parse_args(input_buffer);
+
+
+		
+		//MAIN
 		//Check what type it is
 		//exit
 		if(!strcmp(args[0],"exit"))
@@ -51,6 +65,8 @@ int main(){
 
 		wait(&status);
 		}
+		//END
+		*/
 	}
 	return 0;
 }

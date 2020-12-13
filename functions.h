@@ -4,3 +4,4 @@
 #include <string.h>
 
 char **parse_args(char *);
+int main_exec(char *);
