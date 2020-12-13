@@ -10,9 +10,9 @@ int main(){
 	char input_buffer[1000];
 	char curr_dir[100];
 	int exec_return;
-	char** funcs;
-	int i;
-	
+	int i, status;
+	char **args = malloc(sizeof(char) * 150);
+	char **funcs = malloc(sizeof(char) * 150);
 	while(1){
 		
 		getcwd(curr_dir,99);
@@ -20,18 +20,21 @@ int main(){
 
 		
 		fgets(input_buffer,sizeof(input_buffer),stdin);
-		input_buffer[strlen(input_buffer)-1]=0; //Eliminate \n after fgets
-
+		format_whitespace(input_buffer);
 		//rintf("test\n");
-		funcs=parse_args(input_buffer,';');
+		funcs=parse_args(funcs,input_buffer,';');
 		i=0;
 		while(funcs[i]){
-		
+			//printf("a\n");
 		exec_return=0;
-		exec_return=main_exec(funcs[i]);
+		exec_return=main_exec(args,funcs[i]);
 		i++;
-		if(exec_return==-1)
+		wait(&status);
+		if(exec_return==-1){
+			free(args);
+			free(funcs);
 			return 0;
+		}
 
 		}
 
