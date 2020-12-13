@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+//Return -1 = exit shell
 
 char **parse_args(char *line) //Ex: "ls -a -f"
 {
@@ -38,7 +39,7 @@ int main_exec(char * in_string){
 		//Check what type it is
 		//exit
 		if(!strcmp(args[0],"exit"))
-			return 0;
+			return -1;
 		//cd
 		if(!strcmp(args[0],"cd")){
 			if(!args[1])

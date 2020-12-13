@@ -9,6 +9,7 @@
 int main(){
 	char input_buffer[1000];
 	char curr_dir[100];
+	int exec_return;
 	
 	while(1){
 		
@@ -18,8 +19,10 @@ int main(){
 		
 		fgets(input_buffer,sizeof(input_buffer),stdin);
 
-
-		main_exec(input_buffer);
+		exec_return=0;
+		exec_return=main_exec(input_buffer);
+		if(exec_return==-1)
+			return 0;
 
 
 		//PARSE DIVIDE BY ;
