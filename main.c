@@ -37,52 +37,6 @@ int main(){
 		}
 
 		}
-
-		//PARSE DIVIDE BY ;
-
-
-		/*
-		args=parse_args(input_buffer);
-
-
-		
-		//MAIN
-		//Check what type it is
-		//exit
-		if(!strcmp(args[0],"exit"))
-			return 0;
-		//cd
-		if(!strcmp(args[0],"cd")){
-			if(!args[1])
-				printf("No args inputted for cd\n");//PERHAPS GO HOME?
-			chdir(args[1]);
-			}
-		else{
-		//Redirct
-
-		//Pipe
-
-		//Normal run ls or whatever
-		int f=0;
-		f=fork();
-		
-		if(!f){//CHILD START
-			finished=0;
-			//PATH Exec
-			finished=execvp(args[0],args);//ERRNO????//ERRNO????//ERRNO????//ERRNO????//ERRNO????//ERRNO????
-			//Non PATH exec?
-			//
-			//
-			printf("CHILD PROCESS - ERROR WITH COMMAND INPUT\n");
-			return 1;
-			}//CHILD END
-		else
-			free(args);
-
-		wait(&status);
-		}
-		//END
-		*/
 	}
 	return 0;
 }
