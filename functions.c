@@ -61,7 +61,15 @@ int main_exec(char ** args,char * in_string){
 	if (redir_check(in_string)) {
 		char **funcs = malloc(sizeof(char) * 150);
         parse_args(funcs, in_string,'>');
-        redirect(funcs[1], funcs[0]);
+		int f=0;
+		f=fork();
+		if (!f) {
+        	redirect(funcs[1], funcs[0]);
+			return -1;
+		}
+		else {
+			return 0;
+		}
 	}
 	else {
 	args=parse_args(args,in_string, ' ');
@@ -80,33 +88,30 @@ int main_exec(char ** args,char * in_string){
 			chdir(args[1]);
 			}
 		else{
-		//Redirct
-		
-		//Pipe
+			//Redirct
+			
+			//Pipe
 
-		//Normal run ls or whatever
-		int f=0;
-		f=fork();
-		
-		if(!f){//CHILD START
-			finished=0;
-			printf("I am the child\n");
-			//PATH Exec
-			finished=execvp(args[0],args);
-			printf("Errror %d: %s\n",errno,strerror(errno));
+			//Normal run ls or whatever
+			int f=0;
+			f=fork();
 			
-			//Non PATH exec?
-			//
-			//
-			
-			return -1;
-			}//CHILD END
-		else{
-			
-			
-			
-			return 1;
-		}
+			if(!f){//CHILD START
+				finished=0;
+				printf("I am the child\n");
+				//PATH Exec
+				finished=execvp(args[0],args);
+				printf("Errror %d: %s\n",errno,strerror(errno));
+				
+				//Non PATH exec?
+				//
+				//
+				
+				return -1;
+				}//CHILD END
+			else{
+				return 1;
+			}
 		}
 	}
 }
