@@ -8,6 +8,83 @@
 #include <errno.h>
 #include "functions.h"
 //Return -1 = exit shell
+void stdin_redirect(char *file_name, char **command) {
+    int new_file = open(file_name, O_RDONLY, 0666);
+    int backup = dup(0);
+    dup2(new_file, 0);
+    execvp(command[0],command);
+    dup2(new_file, backup);
+    
+}
+
+char **redir_parse(char **original_args) { //Ex: "ls -a -f"
+    char **return_args = malloc(sizeof(char) * 150);
+	int i = 0;
+    int j = 0;
+    while (original_args[i]) {
+        if (!(*(original_args[i]) == '>') && !(*(original_args[i]) == '<') && !(*(original_args[i]) == '|')) { 
+            return_args[j] = original_args[i];
+            j++;
+        }
+        i++;
+    }
+	return return_args;
+}
+
+char **count_sep(char **args) {
+    char **return_args = malloc(sizeof(char) * 150);
+    int i = 0;
+    int j = 0;
+    while (args[i]) {
+        if (*(args[i]) == '>') {
+            char *pos = malloc(sizeof(char) * 2);
+            pos[0] = '>';
+            pos[1] = i;
+            return_args[j] = pos;
+            j++;
+        }
+        if (*(args[i]) == '<') {
+            char *pos = malloc(sizeof(char) * 2);
+            pos[0] = '<';
+            pos[1] = i;
+            return_args[j] = pos;
+            j++;
+        }
+        if (*(args[i]) == '|') {
+            char *pos = malloc(sizeof(char) * 2);
+            pos[0] = '|';
+            pos[1] = i;
+            return_args[j] = pos;
+            
+            j++;
+        }
+        i++;
+    }
+    return return_args;
+}
+int pos_length (char **pos) {
+    int i = 0;
+    while(pos[i]){
+        i++;
+    }
+    return i;
+}
+
+char **stdin_arr(char **args, int pos) {
+    int i = 0;
+    int j = 0;
+    
+    char **stdin_arr = malloc(sizeof(char) * 100);
+    
+    while (args[i]) {
+        if (i != pos) {
+            stdin_arr[j] = args[i];
+            j++;
+        }
+        i++;
+    }
+    return stdin_arr;
+}
 
 int redir_exec(char *input_buffer) {
 	char **funcs = malloc(sizeof(char) * 150);
@@ -28,7 +105,7 @@ int redir_check(char* command) {
     int i;
     for(i = 0; i < strlen(command); i++) {
         //62 is ">"
-        if (command[i] == 62) 
+        if ((command[i] == 60) || (command[i] == 62))
             return 1;
     }
     return 0;
@@ -37,7 +114,6 @@ int redir_check(char* command) {
 //need to remove \n before
 char **parse_args(char **return_args, char *line, char separator) //Ex: "ls -a -f"
 {
-	
 	
 	char *s, *b;
 	s = line;
@@ -59,20 +135,53 @@ char **parse_args(char **return_args, char *line, char separator) //Ex: "ls -a -
 int main_exec(char ** args,char * in_string){
 	int i,finished;
 	if (redir_check(in_string)) {
+		
+		char fn[100];
 		char **funcs = malloc(sizeof(char) * 150);
-        parse_args(funcs, in_string,'>');
-		int f=0;
-		f=fork();
-		if (!f) {
-        	redirect(funcs[1], funcs[0]);
-			return -1;
+		char **positions = malloc(sizeof(char) * 100);
+		funcs = parse_args(funcs, in_string, ' ');
+		positions = count_sep(funcs);
+		funcs = redir_parse(funcs);
+		int k = 0;
+		while (funcs[k]) {
+			printf("%s\n", funcs[k]);
+			k++;
 		}
+	
+		if (pos_length(positions) == 1) {
+			if ((positions[0])[0] == 62) {
+				int f=0;
+				f=fork();
+				if (!f) {
+					redirect(funcs[1], funcs[0]);
+					return -1;
+				}
+				else {
+					return 0;
+				}
+			}
+			if ((positions[0])[0] == 60) {
+				int f=0;
+				f=fork();
+				if (!f) {
+					strcpy(fn, funcs[ (positions[0])[1] ]);
+					funcs = stdin_arr(funcs, (positions[0])[1]);
+					stdin_redirect(fn, funcs);
+					return -1;
+				}
+				else {
+					return 0;
+				}
+			}
+		}
+
 		else {
-			return 0;
+
 		}
+		
 	}
 	else {
-	args=parse_args(args,in_string, ' ');
+		args=parse_args(args,in_string, ' ');
 
 
 		
@@ -98,7 +207,7 @@ int main_exec(char ** args,char * in_string){
 			
 			if(!f){//CHILD START
 				finished=0;
-				printf("I am the child\n");
+
 				//PATH Exec
 				finished=execvp(args[0],args);
 				printf("Errror %d: %s\n",errno,strerror(errno));
