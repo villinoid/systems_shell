@@ -8,15 +8,24 @@
 #include <errno.h>
 #include "functions.h"
 //Return -1 = exit shell
-void stdin_redirect(char *file_name, char **command) {
-    int new_file = open(file_name, O_RDONLY, 0666);
-    int backup = dup(0);
-    dup2(new_file, 0);
-    execvp(command[0],command);
-    dup2(new_file, backup);
-    
-}
+//need to remove \n before
+char **parse_args(char **return_args, char *line, char separator) //Ex: "ls -a -f"
+{
+	char *s, *b;
+	s = line;
+	
+	//printf("s: %s\n",s);
+	int i = 0;
+	while (s)
+	{
+		s=trim_spaces(s);
+		return_args[i] = strsep(&s, &separator);
+		i++;
+	}
+	return_args[i]=NULL;
 
+	return return_args;
+}
 char **redir_parse(char **original_args) { //Ex: "ls -a -f"
     char **return_args = malloc(sizeof(char) * 150);
 	int i = 0;
@@ -86,13 +95,6 @@ char **stdin_arr(char **args, int pos) {
     return stdin_arr;
 }
 
-void stdout_redirect(char *file_name, char **command) {
-    int new_file = open(file_name, O_CREAT | O_WRONLY | O_TRUNC, 0666);
-    int backup = dup(1);
-    dup2(new_file, 1);
-    execvp(command[0], command);
-    dup2(new_file, backup);
-}
 //redir_check() is a function that checks is > is used 
 int redir_check(char* command) {
     int i;
@@ -104,27 +106,33 @@ int redir_check(char* command) {
     return 0;
 }
 
-//need to remove \n before
-char **parse_args(char **return_args, char *line, char separator) //Ex: "ls -a -f"
-{
-	
-	char *s, *b;
-	s = line;
-	
-	//printf("s: %s\n",s);
-	int i = 0;
-	while (s)
-	{
-		s=trim_spaces(s);
-		return_args[i] = strsep(&s, &separator);
-		
-		i++;
-	}
-	return_args[i]=NULL;
-
-	return return_args;
+void stdout_redirect(char *file_name, char **command) {
+    int new_file = open(file_name, O_CREAT | O_WRONLY | O_TRUNC, 0666);
+    int backup = dup(1);
+    dup2(new_file, 1);
+    execvp(command[0], command);
+    dup2(new_file, backup);
 }
 
+void stdin_redirect(char *file_name, char **command) {
+    int new_file = open(file_name, O_RDONLY, 0666);
+    int backup = dup(0);
+    dup2(new_file, 0);
+    execvp(command[0],command);
+    dup2(new_file, backup);
+}
+
+void double_redirect(char *fn1, char *fn2, char **command){
+	int rdfile = open(fn1, O_RDONLY, 0666);
+	int wrfile = open(fn2, O_CREAT | O_WRONLY | O_TRUNC, 0666);
+	int rdbackup = dup(0);
+	int wrbackup = dup(1);
+	dup2(rdfile, 0);
+	dup2(wrfile, 1);
+	execvp(command[0], command);
+	dup2(rdfile, rdbackup);
+	dup2(wrfile, wrbackup);
+}
 int main_exec(char ** args,char * in_string){
 	int i,finished;
 	if (redir_check(in_string)) {
@@ -141,7 +149,6 @@ int main_exec(char ** args,char * in_string){
 				int f=0;
 				f=fork();
 				if (!f) {
-					
 					strcpy(fn, funcs[ (positions[0])[1] ]);
 					funcs[(positions[0])[1]] = 0;
 					stdout_redirect(fn, funcs);
@@ -167,15 +174,28 @@ int main_exec(char ** args,char * in_string){
 		}
 
 		else {
-
+			int f=0;
+				f=fork();
+				if (!f) {
+					char fn2[100];
+				
+					strcpy(fn, funcs[ (positions[0])[1] ]);
+					
+					strcpy(fn2, funcs[(positions[1])[1] - 1]);
+					
+					funcs[(positions[1])[1]- 1] = 0;
+					funcs = stdin_arr(funcs, (positions[0])[1]);
+					double_redirect(fn, fn2, funcs);
+					return -1;
+				}
+				else {
+					return 0;
+				}
 		}
 		
 	}
 	else {
 		args=parse_args(args,in_string, ' ');
-
-
-		
 		//MAIN
 		//Check what type it is
 		//exit
@@ -188,10 +208,6 @@ int main_exec(char ** args,char * in_string){
 			chdir(args[1]);
 			}
 		else{
-			//Redirct
-			
-			//Pipe
-
 			//Normal run ls or whatever
 			int f=0;
 			f=fork();
@@ -204,9 +220,6 @@ int main_exec(char ** args,char * in_string){
 				printf("Errror %d: %s\n",errno,strerror(errno));
 				
 				//Non PATH exec?
-				//
-				//
-				
 				return -1;
 				}//CHILD END
 			else{
