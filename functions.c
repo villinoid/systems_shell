@@ -86,19 +86,13 @@ char **stdin_arr(char **args, int pos) {
     return stdin_arr;
 }
 
-int redir_exec(char *input_buffer) {
-	char **funcs = malloc(sizeof(char) * 150);
-    format_whitespace(input_buffer);
-    funcs=parse_args(funcs,input_buffer,' ');
-	execvp(funcs[0],funcs);
-}
-void redirect(char *file_name, char* command) {
+void stdout_redirect(char *file_name, char **command) {
     int new_file = open(file_name, O_CREAT | O_WRONLY | O_TRUNC, 0666);
     int backup = dup(1);
     dup2(new_file, 1);
-    redir_exec(command);
+	printf("asdsa: %s\n", command[0]);
+    execvp(command[0], command);
     dup2(new_file, backup);
-    
 }
 //redir_check() is a function that checks is > is used 
 int redir_check(char* command) {
@@ -142,18 +136,16 @@ int main_exec(char ** args,char * in_string){
 		funcs = parse_args(funcs, in_string, ' ');
 		positions = count_sep(funcs);
 		funcs = redir_parse(funcs);
-		int k = 0;
-		while (funcs[k]) {
-			printf("%s\n", funcs[k]);
-			k++;
-		}
 	
 		if (pos_length(positions) == 1) {
 			if ((positions[0])[0] == 62) {
 				int f=0;
 				f=fork();
 				if (!f) {
-					redirect(funcs[1], funcs[0]);
+					
+					strcpy(fn, funcs[ (positions[0])[1] ]);
+					funcs[(positions[0])[1]] = 0;
+					stdout_redirect(fn, funcs);
 					return -1;
 				}
 				else {
