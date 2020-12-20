@@ -5,6 +5,8 @@
 #include "functions.h"
 #include <sys/types.h>
 #include <sys/wait.h>
+#include "exec.h"
+#include "redirect.h"
 
 int main(){
 	char input_buffer[1000];
