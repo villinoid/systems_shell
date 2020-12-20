@@ -6,13 +6,14 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
-#include "functions.h"
+#include "exec.h"
+
 char **redir_parse(char **original_args) { //Ex: "ls -a -f"
     char **return_args = malloc(sizeof(char) * 150);
 	int i = 0;
     int j = 0;
     while (original_args[i]) {
-        if (!(*(original_args[i]) == '>') && !(*(original_args[i]) == '<') && !(*(original_args[i]) == '|')) { 
+        if (!(*(original_args[i]) == '>') && !(*(original_args[i]) == '<') && !(*(original_args[i]) == '|')) {
             return_args[j] = original_args[i];
             j++;
         }
@@ -45,7 +46,7 @@ char **count_sep(char **args) {
             pos[0] = '|';
             pos[1] = i;
             return_args[j] = pos;
-            
+
             j++;
         }
         i++;
@@ -63,9 +64,9 @@ int pos_length (char **pos) {
 char **stdin_arr(char **args, int pos) {
     int i = 0;
     int j = 0;
-    
+
     char **stdin_arr = malloc(sizeof(char) * 100);
-    
+
     while (args[i]) {
         if (i != pos) {
             stdin_arr[j] = args[i];
@@ -76,7 +77,7 @@ char **stdin_arr(char **args, int pos) {
     return stdin_arr;
 }
 
-//redir_check() is a function that checks is > is used 
+//redir_check() is a function that checks is > is used
 int redir_check(char* command) {
     int i;
     for(i = 0; i < strlen(command); i++) {

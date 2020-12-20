@@ -1,8 +1,10 @@
-all: main.o functions.o
-	gcc -g -o main main.o functions.o
-main.o: main.c functions.h
+all: main.o exec.o redirect.o
+	gcc -g -o main main.o exec.o redirect.o
+main.o: main.c exec.h redirect.h
 	gcc -c main.c
-functions.o: functions.c functions.h
-	gcc -c functions.c
+redirect.o: redirect.c exec.h
+	gcc -c redirect.c
+exec.o: exec.c
+	gcc -c exec.c
 run:
 	./main

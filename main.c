@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include "functions.h"
 #include <sys/types.h>
 #include <sys/wait.h>
 #include "exec.h"
@@ -16,11 +15,11 @@ int main(){
 	char **args = malloc(sizeof(char) * 150);
 	char **funcs = malloc(sizeof(char) * 150);
 	while(1){
-		
+
 		getcwd(curr_dir,99);
 		printf("%s - $ ",curr_dir);
 
-		
+
 		fgets(input_buffer,sizeof(input_buffer),stdin);
 		format_whitespace(input_buffer);
 		//rintf("test\n");
@@ -42,4 +41,3 @@ int main(){
 	}
 	return 0;
 }
-		

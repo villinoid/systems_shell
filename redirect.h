@@ -7,7 +7,6 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include "exec.h"
-#include "redirect.h"
 
 char **redir_parse(char **);
 char **count_sep(char **);
