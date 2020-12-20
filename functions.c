@@ -90,7 +90,6 @@ void stdout_redirect(char *file_name, char **command) {
     int new_file = open(file_name, O_CREAT | O_WRONLY | O_TRUNC, 0666);
     int backup = dup(1);
     dup2(new_file, 1);
-	printf("asdsa: %s\n", command[0]);
     execvp(command[0], command);
     dup2(new_file, backup);
 }
