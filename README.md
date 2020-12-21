@@ -4,14 +4,14 @@ Team FVY
 
 ###Features:
 - Can fork and execute commands 
-- Allows for changing of work directory (cd) and exiting (exit)
-- Allows for putting multiple spaces between commands (ls -a   -l ;  ps    -a -l)
-- Will trim \n 
-- If there is no input and that is entered, the process will restart and prompt for input again
+    - Allows for changing of work directory (cd) and exiting (exit)
+    - Allows for putting multiple spaces between commands (ls -a   -l ;  ps    -a -l)
+    - Will trim \n 
+    - If there is no input and that is entered, the process will restart and prompt for input again
 - Can run multiple commands on the same line using ; as a separator
 - Redirects input and output using > and <
 - The < is not bound by position
--“tr a-z < file.txt A-Z” has the same output as “tr a-z A-Z < file.txt”
+    - “tr a-z < file.txt A-Z” has the same output as “tr a-z A-Z < file.txt”
 - Supports the use of > and < at the same time
 	- Only works with two >,< total in the order “cmd -args < read_file > write_file”
 - Allows for passing of output from one process to another using |
