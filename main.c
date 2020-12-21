@@ -14,14 +14,17 @@ int main(){
 	int i, status;
 	char **args = malloc(sizeof(char) * 150);
 	char **funcs = malloc(sizeof(char) * 150);
+	char name_buf[1000];
 	while(1) {
-
+		readlink("/proc/self/fd/0",name_buf,1000);
+		//printf("%s\n",name_buf);
 		getcwd(curr_dir,99);
-		if(dup(0)==STDIN_FILENO)
+		if (!strcmp(name_buf,"/dev/tty1")){
 			printf("%s - $ ",curr_dir);
-
+		}
 
 		fgets(input_buffer,sizeof(input_buffer),stdin);
+
 		format_whitespace(input_buffer);
 		//rintf("test\n");
 		funcs=parse_args(funcs,input_buffer,';');
