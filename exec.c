@@ -10,7 +10,7 @@
 #include "redirect.h"
 //Return -1 = exit shell
 //need to remove \n before
-char **parse_args(char **return_args, char *line, char separator) //Ex: "ls -a -f"
+char **parse_args(char **return_args, char *line, char separator) //parses line with a separator Ex: "ls -a -f"
 {
 	char *s, *b;
 	s = line;
@@ -28,7 +28,7 @@ char **parse_args(char **return_args, char *line, char separator) //Ex: "ls -a -
 	return return_args;
 }
 
-int main_exec(char ** args,char * in_string){
+int main_exec(char ** args,char * in_string){//the main execute function all executes 1 command
 	int finished;
 	if (redir_check(in_string)) {
 
@@ -120,11 +120,11 @@ int main_exec(char ** args,char * in_string){
 		//cd
 		if(!strcmp(args[0],"cd")) {
 			if(!args[1])
-				printf("No args inputted for cd\n"); //PERHAPS GO HOME?
+				printf("No args inputted for cd\n");
 			chdir(args[1]);
 		}
 		else{
-			//Normal run ls or whatever
+			//Normal run
 			int f=0;
 			f=fork();
 
@@ -133,9 +133,9 @@ int main_exec(char ** args,char * in_string){
 
 				//PATH Exec
 				finished=execvp(args[0],args);
-				printf("Errror %d: %s\n",errno,strerror(errno));
+				printf("Error %d: %s\n",errno,strerror(errno));
 
-				//Non PATH exec?
+
 				return -1;
 			}        //CHILD END
 			else{
@@ -145,7 +145,7 @@ int main_exec(char ** args,char * in_string){
 	}
 }
 
-void format_whitespace(char *line){
+void format_whitespace(char *line){//converts all other instances of whitespace to ' '
 	int i=0;
 	while(line[i]) {
 		if(line[i]=='\t'||line[i]=='\n')
@@ -154,15 +154,17 @@ void format_whitespace(char *line){
 	}
 }
 
-char *trim_spaces(char *line){
+char *trim_spaces(char *line){//removes ' ' from the ends of the string
 	int i=0;
 	int j=strlen(line)-1;
 	while(line[i]==' ') {
-		i++;
+		i++;// moves the start of the string forward
 	}
 	while(line[j]==' ') {
 		line[j]=0;
-		j--;
+		j--;//puts a teminating null instead of ' '
 	}
 	return line+i;
 }
+
+

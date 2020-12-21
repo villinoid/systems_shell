@@ -18,20 +18,18 @@ int main(){
 	readlink("/proc/self/fd/0",name_buf,1000);//gets the directory for the input stream
 	while(1) {
 		getcwd(curr_dir,99);
-		if (!strncmp(name_buf,"/dev/",5)){
+		if (!strncmp(name_buf,"/dev/",5)){//if the input stream is in /dev/ (which is where stdin is) prints the current directory
 			printf("%s - $ ",curr_dir);
 		}
 
 		fgets(input_buffer,sizeof(input_buffer),stdin);
-
 		format_whitespace(input_buffer);
-		//rintf("test\n");
-		funcs=parse_args(funcs,input_buffer,';');
+		if(strcmp(" ",input_buffer)){
+		funcs=parse_args(funcs,input_buffer,';');//parsing functions at ;
 		i=0;
 		while(funcs[i]) {
-			//printf("a\n");
 			exec_return=0;
-			exec_return=main_exec(args,funcs[i]);
+			exec_return=main_exec(args,funcs[i]);//executes all functions
 			i++;
 			wait(&status);
 			if(exec_return==-1) {
@@ -40,6 +38,7 @@ int main(){
 				return 0;
 			}
 
+		}
 		}
 	}
 	return 0;
