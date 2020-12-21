@@ -14,10 +14,11 @@ int main(){
 	int i, status;
 	char **args = malloc(sizeof(char) * 150);
 	char **funcs = malloc(sizeof(char) * 150);
-	while(1){
+	while(1) {
 
 		getcwd(curr_dir,99);
-		printf("%s - $ ",curr_dir);
+		if(dup(0)==STDIN_FILENO)
+			printf("%s - $ ",curr_dir);
 
 
 		fgets(input_buffer,sizeof(input_buffer),stdin);
@@ -25,17 +26,17 @@ int main(){
 		//rintf("test\n");
 		funcs=parse_args(funcs,input_buffer,';');
 		i=0;
-		while(funcs[i]){
+		while(funcs[i]) {
 			//printf("a\n");
-		exec_return=0;
-		exec_return=main_exec(args,funcs[i]);
-		i++;
-		wait(&status);
-		if(exec_return==-1){
-			free(args);
-			free(funcs);
-			return 0;
-		}
+			exec_return=0;
+			exec_return=main_exec(args,funcs[i]);
+			i++;
+			wait(&status);
+			if(exec_return==-1) {
+				free(args);
+				free(funcs);
+				return 0;
+			}
 
 		}
 	}
