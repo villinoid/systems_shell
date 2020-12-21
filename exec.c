@@ -10,7 +10,7 @@
 #include "redirect.h"
 //Return -1 = exit shell
 
-//uses strsep to create an array of pointers 
+//uses strsep to create an array of pointers
 char **parse_args(char **return_args, char *line, char separator)
 {
 	char *s, *b;
@@ -73,7 +73,7 @@ int main_exec(char ** args,char * in_string){
 
 			if ((positions[0])[0] == 124) {//if pipe is in positions
 				int f=0;
-				f=fork();
+				f=fork();//Forks into child that then forks into two pipe processes
 				if(!f) {//Child
 					pipe_redirect_and_fork(pipe_funcs,pipe_funcs+1+(positions[0])[1]);
 					return -1;
@@ -113,10 +113,11 @@ int main_exec(char ** args,char * in_string){
 		if(!strcmp(args[0],"cd")) {
 			if(!args[1])
 				printf("No args inputted for cd\n");
-			chdir(args[1]);
+			else
+				chdir(args[1]);
 		}
 		else{
-			//Normal run
+			//Normal run with exec
 			int f=0;
 			f=fork();
 
@@ -125,9 +126,8 @@ int main_exec(char ** args,char * in_string){
 				//PATH Exec
 				finished=execvp(args[0],args);
 				printf("Error %d: %s\n",errno,strerror(errno));
-
-				return -1;
-			}        //CHILD END
+				return -1;//CHILD END if it errors
+			}
 			else{
 				return 1;
 			}
@@ -158,5 +158,3 @@ char *trim_spaces(char *line){
 	}
 	return line+i;
 }
-
-

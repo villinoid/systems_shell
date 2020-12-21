@@ -8,7 +8,7 @@
 #include <errno.h>
 #include "exec.h"
 
- 
+
 char **redir_parse(char **original_args) { //Ex: "ls -a -f"
 	char **return_args = malloc(sizeof(char) * 150);
 	int i = 0;
@@ -27,7 +27,7 @@ char **count_sep(char **args) {
 	char **return_args = malloc(sizeof(char) * 150);
 	int i = 0;
 	int j = 0;
-	while (args[i]) { //finds the position of redirection operators 
+	while (args[i]) { //finds the position of redirection operators
 		if (*(args[i]) == '>') {
 			char *pos = malloc(sizeof(char) * 2);
 			pos[0] = '>'; //stored along with the operator itself
@@ -104,7 +104,7 @@ void stdin_redirect(char *file_name, char **command) {
 	dup2(new_file, backup); //switches them back
 }
 
-//same concept as before, but now both stdout and stdin are being switched 
+//same concept as before, but now both stdout and stdin are being switched
 void double_redirect(char *fn1, char *fn2, char **command){
 	int rdfile = open(fn1, O_RDONLY, 0666);
 	int wrfile = open(fn2, O_CREAT | O_WRONLY | O_TRUNC, 0666);
@@ -120,21 +120,20 @@ void double_redirect(char *fn1, char *fn2, char **command){
 //opens a pipe
 void pipe_redirect_and_fork(char **command1, char **command2) {
 	int pipe_fd[2];
-	pipe(pipe_fd);
+	pipe(pipe_fd);//Makes pipe
 	int backup0 = dup(0);
 	int backup1 = dup(1);
 
 	int f=0;
-	f=fork();
-
+	f=fork();//Fork into read and write process
 	if(!f) {
 		dup2(pipe_fd[1], 1);//Change write
-		close(pipe_fd[0]);
+		close(pipe_fd[0]);//Close "wrong" fd
 		execvp(command1[0],command1);
 	}
 	else{
 		dup2(pipe_fd[0], 0);//Change Read
-		close(pipe_fd[1]);
+		close(pipe_fd[1]);//Close "wrong" fd
 		execvp(command2[0],command2);
 	}
 }
