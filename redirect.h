@@ -16,3 +16,4 @@ int redir_check(char *);
 void stdout_redirect(char *, char **);
 void stdin_redirect(char *, char **);
 void double_redirect(char *, char *, char **);
+void pipe_redirect_and_fork(char **, char **);

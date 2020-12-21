@@ -9,99 +9,99 @@
 #include "exec.h"
 
 char **redir_parse(char **original_args) { //Ex: "ls -a -f"
-    char **return_args = malloc(sizeof(char) * 150);
+	char **return_args = malloc(sizeof(char) * 150);
 	int i = 0;
-    int j = 0;
-    while (original_args[i]) {
-        if (!(*(original_args[i]) == '>') && !(*(original_args[i]) == '<') && !(*(original_args[i]) == '|')) {
-            return_args[j] = original_args[i];
-            j++;
-        }
-        i++;
-    }
+	int j = 0;
+	while (original_args[i]) {
+		if (!(*(original_args[i]) == '>') && !(*(original_args[i]) == '<') && !(*(original_args[i]) == '|')) {
+			return_args[j] = original_args[i];
+			j++;
+		}
+		i++;
+	}
 	return return_args;
 }
 
 char **count_sep(char **args) {
-    char **return_args = malloc(sizeof(char) * 150);
-    int i = 0;
-    int j = 0;
-    while (args[i]) {
-        if (*(args[i]) == '>') {
-            char *pos = malloc(sizeof(char) * 2);
-            pos[0] = '>';
-            pos[1] = i;
-            return_args[j] = pos;
-            j++;
-        }
-        if (*(args[i]) == '<') {
-            char *pos = malloc(sizeof(char) * 2);
-            pos[0] = '<';
-            pos[1] = i;
-            return_args[j] = pos;
-            j++;
-        }
-        if (*(args[i]) == '|') {
-            char *pos = malloc(sizeof(char) * 2);
-            pos[0] = '|';
-            pos[1] = i;
-            return_args[j] = pos;
+	char **return_args = malloc(sizeof(char) * 150);
+	int i = 0;
+	int j = 0;
+	while (args[i]) {
+		if (*(args[i]) == '>') {
+			char *pos = malloc(sizeof(char) * 2);
+			pos[0] = '>';
+			pos[1] = i;
+			return_args[j] = pos;
+			j++;
+		}
+		if (*(args[i]) == '<') {
+			char *pos = malloc(sizeof(char) * 2);
+			pos[0] = '<';
+			pos[1] = i;
+			return_args[j] = pos;
+			j++;
+		}
+		if (*(args[i]) == '|') {
+			char *pos = malloc(sizeof(char) * 2);
+			pos[0] = '|';
+			pos[1] = i;
+			return_args[j] = pos;
 
-            j++;
-        }
-        i++;
-    }
-    return return_args;
+			j++;
+		}
+		i++;
+	}
+	return return_args;
 }
 int pos_length (char **pos) {
-    int i = 0;
-    while(pos[i]){
-        i++;
-    }
-    return i;
+	int i = 0;
+	while(pos[i]) {
+		i++;
+	}
+	return i;
 }
 
 char **stdin_arr(char **args, int pos) {
-    int i = 0;
-    int j = 0;
+	int i = 0;
+	int j = 0;
 
-    char **stdin_arr = malloc(sizeof(char) * 100);
+	char **stdin_arr = malloc(sizeof(char) * 100);
 
-    while (args[i]) {
-        if (i != pos) {
-            stdin_arr[j] = args[i];
-            j++;
-        }
-        i++;
-    }
-    return stdin_arr;
+	while (args[i]) {
+		if (i != pos) {
+			stdin_arr[j] = args[i];
+			j++;
+		}
+		i++;
+	}
+	return stdin_arr;
 }
 
 //redir_check() is a function that checks is > is used
 int redir_check(char* command) {
-    int i;
-    for(i = 0; i < strlen(command); i++) {
-        //62 is ">"
-        if ((command[i] == 60) || (command[i] == 62))
-            return 1;
-    }
-    return 0;
+	int i;
+	for(i = 0; i < strlen(command); i++) {
+		//62 is ">"
+		if ((command[i] == 60) || (command[i] == 62) || (command[i] == 124))
+			return 1;
+	}
+	return 0;
 }
 
 void stdout_redirect(char *file_name, char **command) {
-    int new_file = open(file_name, O_CREAT | O_WRONLY | O_TRUNC, 0666);
-    int backup = dup(1);
-    dup2(new_file, 1);
-    execvp(command[0], command);
-    dup2(new_file, backup);
+	int new_file = open(file_name, O_CREAT | O_WRONLY | O_TRUNC, 0666);
+	int backup = dup(1);
+	dup2(new_file, 1);
+	execvp(command[0], command);
+	dup2(new_file, backup);
 }
 
 void stdin_redirect(char *file_name, char **command) {
-    int new_file = open(file_name, O_RDONLY, 0666);
-    int backup = dup(0);
-    dup2(new_file, 0);
-    execvp(command[0],command);
-    dup2(new_file, backup);
+	int new_file = open(file_name, O_RDONLY, 0666);
+	int backup = dup(0);
+	dup2(new_file, 0);
+	execvp(command[0],command);
+	dup2(new_file, backup);
 }
 
 void double_redirect(char *fn1, char *fn2, char **command){
@@ -114,4 +114,25 @@ void double_redirect(char *fn1, char *fn2, char **command){
 	execvp(command[0], command);
 	dup2(rdfile, rdbackup);
 	dup2(wrfile, wrbackup);
+}
+
+void pipe_redirect_and_fork(char **command1, char **command2) {
+	int pipe_fd[2];
+	pipe(pipe_fd);
+	int backup0 = dup(0);
+	int backup1 = dup(1);
+
+	int f=0;
+	f=fork();
+
+    if(!f){
+        dup2(pipe_fd[1], 1);//Change write
+        close(pipe_fd[0]);
+        execvp(command1[0],command1);
+    }
+    else{
+        dup2(pipe_fd[0], 0);//Change Read
+        close(pipe_fd[1]);
+        execvp(command2[0],command2);
+    }
 }
