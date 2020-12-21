@@ -5,10 +5,10 @@ Team FVY
 ###Features:
 - Can fork and execute commands 
     - Allows for changing of work directory (cd) and exiting (exit)
-    - Allows for putting multiple spaces between commands (ls -a   -l ;  ps    -a -l)
+    - Allows for putting multiple spaces between arguments
     - Will trim \n 
     - If there is no input and that is entered, the process will restart and prompt for input again
-- Can run multiple commands on the same line using ; as a separator
+- Can run multiple commands on the same line using ";" as a separator
 - Redirects input and output using > and <
 - The < is not bound by position
     - “tr a-z < file.txt A-Z” has the same output as “tr a-z A-Z < file.txt”
@@ -23,7 +23,7 @@ Team FVY
 
 - Attempted to parse input in strings (ex: echo “Hello World”)
 - Attempted to parse escape characters
-- Attempted to support two pipes in a line, but had issues wit forking
+- Attempted to support two pipes in a line, but had issues with forking
 - Attempted to support use of pipes and redirection in the same line, but had output issues
 
 ---
@@ -33,7 +33,7 @@ Team FVY
 - When redirecting, a space must be put between the > or < and the file name, otherwise
 - Combining pipes and redirection operators will not work
 - Will not work if order of redirection is switched: > then < 
-- Putting two ; next to each other will break the program
+- Putting two ";" separators next to each other will break the program
 
 ---
 
