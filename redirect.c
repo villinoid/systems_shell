@@ -125,14 +125,14 @@ void pipe_redirect_and_fork(char **command1, char **command2) {
 	int f=0;
 	f=fork();
 
-    if(!f){
-        dup2(pipe_fd[1], 1);//Change write
-        close(pipe_fd[0]);
-        execvp(command1[0],command1);
-    }
-    else{
-        dup2(pipe_fd[0], 0);//Change Read
-        close(pipe_fd[1]);
-        execvp(command2[0],command2);
-    }
+	if(!f) {
+		dup2(pipe_fd[1], 1);//Change write
+		close(pipe_fd[0]);
+		execvp(command1[0],command1);
+	}
+	else{
+		dup2(pipe_fd[0], 0);//Change Read
+		close(pipe_fd[1]);
+		execvp(command2[0],command2);
+	}
 }

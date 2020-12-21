@@ -72,18 +72,21 @@ int main_exec(char ** args,char * in_string){
 					return 0;
 				}
 			}
-			if ((positions[0])[0] == 124) {
-				printf("0:%s\n", pipe_funcs[0]);
-				printf("1:%s\n", pipe_funcs[1]);
-				printf("2:%s\n", pipe_funcs[2]);
-				printf("3:%s\n", pipe_funcs[3]);
-				printf("4:%s\n", pipe_funcs[4]);
-				printf("5:%s\n", pipe_funcs[5]);
-				//pipe_redirect_and_fork(a,b);
-				pipe_redirect_and_fork(pipe_funcs,pipe_funcs+(positions[0])[1]);
-				return 0;
 
+			if ((positions[0])[0] == 124) {
+				int f=0;
+				f=fork();
+				if(!f) {//Child
+					pipe_redirect_and_fork(pipe_funcs,pipe_funcs+1+(positions[0])[1]);
+					return -1;
+				}
+				else{
+					return 0;
+				}
 			}
+
+
+
 		}
 
 		else {
