@@ -35,7 +35,7 @@ Team FVY
 - Combining pipes and redirection operators will not work
 - Will not work if order of redirection is switched: > then < 
 - Putting two ";" separators next to each other will break the program
-
+- Up and down arrow key shortcuts for input will cause weird characters to show up
 ---
 
 ### Files & Function Headers:
