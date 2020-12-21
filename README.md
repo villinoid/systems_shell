@@ -6,7 +6,7 @@ Team FVY
 ### Features:
 - Can fork and execute commands
     - Allows for changing of work directory (cd) and exiting (exit)
-        - If no args inputted for c it acknowledges, doesn't run cd, and waits for next input
+        - If no args inputted for cd it acknowledges, doesn't run cd, and waits for next input
     - Allows for putting multiple spaces and \t between arguments
     - Will trim \n
     - If there is no input and that is entered, the process will restart and prompt for input again
