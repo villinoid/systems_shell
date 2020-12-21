@@ -17,9 +17,8 @@ int main(){
 	char name_buf[1000];
 	readlink("/proc/self/fd/0",name_buf,1000);//gets the directory for the input stream
 	while(1) {
-		printf("%s\n",name_buf);
 		getcwd(curr_dir,99);
-		if (!strcmp(name_buf,"/dev/tty1")){
+		if (!strncmp(name_buf,"/dev/",5)){
 			printf("%s - $ ",curr_dir);
 		}
 
