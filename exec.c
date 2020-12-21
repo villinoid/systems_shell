@@ -10,7 +10,7 @@
 #include "redirect.h"
 //Return -1 = exit shell
 //need to remove \n before
-char **parse_args(char **return_args, char *line, char separator) //parses line with a separator Ex: "ls -a -f"
+char **parse_args(char **return_args, char *line, char separator)
 {
 	char *s, *b;
 	s = line;
@@ -28,7 +28,7 @@ char **parse_args(char **return_args, char *line, char separator) //parses line 
 	return return_args;
 }
 
-int main_exec(char ** args,char * in_string){//the main execute function all executes 1 command
+int main_exec(char ** args,char * in_string){
 	int finished;
 	if (redir_check(in_string)) {
 
@@ -145,7 +145,7 @@ int main_exec(char ** args,char * in_string){//the main execute function all exe
 	}
 }
 
-void format_whitespace(char *line){//converts all other instances of whitespace to ' '
+void format_whitespace(char *line){
 	int i=0;
 	while(line[i]) {
 		if(line[i]=='\t'||line[i]=='\n')
@@ -154,7 +154,7 @@ void format_whitespace(char *line){//converts all other instances of whitespace 
 	}
 }
 
-char *trim_spaces(char *line){//removes ' ' from the ends of the string
+char *trim_spaces(char *line){
 	int i=0;
 	int j=strlen(line)-1;
 	while(line[i]==' ') {
