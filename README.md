@@ -99,7 +99,7 @@ Runs a loop through the array in which position of redirection operator is store
 
 /*========char **stdin_arr()==========
 Inputs: char **args
-int pos
+        int pos
 Returns: an array of pointers removing the file in input direction and containing only commands and arguments 
 
 Runs a loop through the array of commands, arguments and files and since the position of files are known, they are removed in the loop.
@@ -114,15 +114,15 @@ Runs a loop through the input to check if >, < or | is involved.
 
 /*========void stdout_redirect()==========
 Inputs: char *file_name
-char **command
+        char **command
 Returns: does not return anything; executes a command and redirects its output into an output file
 
 Uses dup and dup2 (with backups created) to swap stdout and an output file, opened by the function, on the file table so that the output of a command is redirected to the output file.
  ====================*/
 
 /*========void stdin_redirect()==========
-Inputs:char *file_name 
-char **command
+Inputs: char *file_name 
+        char **command
 Returns: does not return anything; redirects the contents of an input file into the command
 
 Uses dup and dup2 (with backups created) to swap stdin and an input file on the file table so that the input file is redirected to the command to be interpreted and executed.
@@ -130,8 +130,8 @@ Uses dup and dup2 (with backups created) to swap stdin and an input file on the 
 
 /*========void double_redirect()==========
 Inputs: char *fn1
-char *fn2
-char **command 
+        char *fn2
+        char **command 
 Returns: does not return anything; redirects the content of an input file into a command and redirects the outputs of that command into an output file
 
 Uses dup and dup2 (with backups created) to swap stdin and an input file on the file table so that the input file is redirected to the command to be interpreted and executed. Then, an output file is opened and swapped on the file table for the output of that command to be written to the file.
@@ -139,7 +139,7 @@ Uses dup and dup2 (with backups created) to swap stdin and an input file on the 
 
 /*========void pipe_redirect_and_fork()==========
 Inputs: char **command1
-char **command2
+        char **command2
 Returns: does not return anything; 
 
 Opens an unnamed pipe and then forks the process and uses said pipe to read and write through a buffer.

@@ -8,11 +8,12 @@
 #include <errno.h>
 #include "exec.h"
 
+ 
 char **redir_parse(char **original_args) { //Ex: "ls -a -f"
 	char **return_args = malloc(sizeof(char) * 150);
 	int i = 0;
 	int j = 0;
-	while (original_args[i]) {
+	while (original_args[i]) { //loops through args to clean out redirection operators
 		if (!(*(original_args[i]) == '>') && !(*(original_args[i]) == '<') && !(*(original_args[i]) == '|')) {
 			return_args[j] = original_args[i];
 			j++;
@@ -26,10 +27,10 @@ char **count_sep(char **args) {
 	char **return_args = malloc(sizeof(char) * 150);
 	int i = 0;
 	int j = 0;
-	while (args[i]) {
+	while (args[i]) { //finds the position of redirection operators 
 		if (*(args[i]) == '>') {
 			char *pos = malloc(sizeof(char) * 2);
-			pos[0] = '>';
+			pos[0] = '>'; //stored along with the operator itself
 			pos[1] = i;
 			return_args[j] = pos;
 			j++;
@@ -55,7 +56,7 @@ char **count_sep(char **args) {
 }
 int pos_length (char **pos) {
 	int i = 0;
-	while(pos[i]) {
+	while(pos[i]) { //finds how many redirection operators are used
 		i++;
 	}
 	return i;
@@ -68,7 +69,7 @@ char **stdin_arr(char **args, int pos) {
 	char **stdin_arr = malloc(sizeof(char) * 100);
 
 	while (args[i]) {
-		if (i != pos) {
+		if (i != pos) { //removes input file from executed command
 			stdin_arr[j] = args[i];
 			j++;
 		}
@@ -77,11 +78,10 @@ char **stdin_arr(char **args, int pos) {
 	return stdin_arr;
 }
 
-//redir_check() is a function that checks is > is used
 int redir_check(char* command) {
 	int i;
 	for(i = 0; i < strlen(command); i++) {
-		//62 is ">"
+		//62, 60 and 124 are > < and | respectively
 		if ((command[i] == 60) || (command[i] == 62) || (command[i] == 124))
 			return 1;
 	}
@@ -91,19 +91,20 @@ int redir_check(char* command) {
 void stdout_redirect(char *file_name, char **command) {
 	int new_file = open(file_name, O_CREAT | O_WRONLY | O_TRUNC, 0666);
 	int backup = dup(1);
-	dup2(new_file, 1);
+	dup2(new_file, 1); //switches output and stdout
 	execvp(command[0], command);
-	dup2(new_file, backup);
+	dup2(new_file, backup); //switches them back
 }
 
 void stdin_redirect(char *file_name, char **command) {
 	int new_file = open(file_name, O_RDONLY, 0666);
-	int backup = dup(0);
+	int backup = dup(0); //switches input and stdin
 	dup2(new_file, 0);
 	execvp(command[0],command);
-	dup2(new_file, backup);
+	dup2(new_file, backup); //switches them back
 }
 
+//same concept as before, but now both stdout and stdin are being switched 
 void double_redirect(char *fn1, char *fn2, char **command){
 	int rdfile = open(fn1, O_RDONLY, 0666);
 	int wrfile = open(fn2, O_CREAT | O_WRONLY | O_TRUNC, 0666);
@@ -116,6 +117,7 @@ void double_redirect(char *fn1, char *fn2, char **command){
 	dup2(wrfile, wrbackup);
 }
 
+//opens a pipe
 void pipe_redirect_and_fork(char **command1, char **command2) {
 	int pipe_fd[2];
 	pipe(pipe_fd);

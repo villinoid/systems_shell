@@ -9,13 +9,12 @@
 #include "exec.h"
 #include "redirect.h"
 //Return -1 = exit shell
-//need to remove \n before
+
+//uses strsep to create an array of pointers 
 char **parse_args(char **return_args, char *line, char separator)
 {
 	char *s, *b;
 	s = line;
-
-	//printf("s: %s\n",s);
 	int i = 0;
 	while (s)
 	{
@@ -24,10 +23,10 @@ char **parse_args(char **return_args, char *line, char separator)
 		i++;
 	}
 	return_args[i]=NULL;
-
 	return return_args;
 }
 
+//function that handles executing input; merges components of redirection, piping, changing of directory and exiting
 int main_exec(char ** args,char * in_string){
 	int finished;
 	if (redir_check(in_string)) {//if there is a pipe or a redirection symbol in the string
@@ -43,7 +42,6 @@ int main_exec(char ** args,char * in_string){
 		positions = count_sep(funcs);
 		funcs = redir_parse(funcs);
 		pipe_funcs[(positions[0])[1]]=0;
-
 
 		if (pos_length(positions) == 1) {
 			if ((positions[0])[0] == 62) {
@@ -84,19 +82,15 @@ int main_exec(char ** args,char * in_string){
 					return 0;
 				}
 			}
-
-
-
 		}
 
-		else {//double redirect is  a corner case
+		else {//double redirect is a corner case
 			int f=0;
 			f=fork();
 			if (!f) {
 				char fn2[100];
 
 				strcpy(fn, funcs[ (positions[0])[1] ]);
-
 				strcpy(fn2, funcs[(positions[1])[1] - 1]);
 
 				funcs[(positions[1])[1]- 1] = 0;
@@ -108,12 +102,10 @@ int main_exec(char ** args,char * in_string){
 				return 0;
 			}
 		}
-
 	}
 	else {
 		args=parse_args(args,in_string, ' ');
-		//MAIN
-		//Check what type it is
+		//Check what type (exit, cd or normal command) it is
 		//exit
 		if(!strcmp(args[0],"exit"))
 			return -1;
@@ -130,11 +122,9 @@ int main_exec(char ** args,char * in_string){
 
 			if(!f) {//CHILD START
 				finished=0;
-
 				//PATH Exec
 				finished=execvp(args[0],args);
 				printf("Error %d: %s\n",errno,strerror(errno));
-
 
 				return -1;
 			}        //CHILD END
@@ -145,6 +135,7 @@ int main_exec(char ** args,char * in_string){
 	}
 }
 
+//gets rid of escape characters
 void format_whitespace(char *line){
 	int i=0;
 	while(line[i]) {
@@ -154,6 +145,7 @@ void format_whitespace(char *line){
 	}
 }
 
+//gets rid of multiple spacing between arguments
 char *trim_spaces(char *line){
 	int i=0;
 	int j=strlen(line)-1;
