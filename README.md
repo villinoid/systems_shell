@@ -1,5 +1,5 @@
 ## FVY
-by Francesco Siniscalco, Vladislav Vostrikov and Yulin Zheng 
+by Francesco Siniscalco, Vladislav Vostrikov and Yulin Zheng\ 
 Team FVY
 
 ### Features:
