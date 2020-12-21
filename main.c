@@ -15,9 +15,9 @@ int main(){
 	char **args = malloc(sizeof(char) * 150);
 	char **funcs = malloc(sizeof(char) * 150);
 	char name_buf[1000];
+	readlink("/proc/self/fd/0",name_buf,1000);//gets the directory for the input stream
 	while(1) {
-		readlink("/proc/self/fd/0",name_buf,1000);
-		//printf("%s\n",name_buf);
+		printf("%s\n",name_buf);
 		getcwd(curr_dir,99);
 		if (!strcmp(name_buf,"/dev/tty1")){
 			printf("%s - $ ",curr_dir);
