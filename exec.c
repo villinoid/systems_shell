@@ -30,7 +30,7 @@ char **parse_args(char **return_args, char *line, char separator)
 
 int main_exec(char ** args,char * in_string){
 	int finished;
-	if (redir_check(in_string)) {
+	if (redir_check(in_string)) {//if there is a pipe or a redirection symbol in the string
 
 		char fn[100];
 		char **funcs = malloc(sizeof(char) * 150);
@@ -38,7 +38,7 @@ int main_exec(char ** args,char * in_string){
 		char **positions = malloc(sizeof(char) * 100);
 		char pipe_string[100];
 		strcpy(pipe_string,in_string);
-		funcs = parse_args(funcs, in_string, ' ');
+		funcs = parse_args(funcs, in_string, ' ');// separate array for working with pipes
 		pipe_funcs = parse_args(pipe_funcs, pipe_string, ' ');
 		positions = count_sep(funcs);
 		funcs = redir_parse(funcs);
@@ -73,7 +73,7 @@ int main_exec(char ** args,char * in_string){
 				}
 			}
 
-			if ((positions[0])[0] == 124) {
+			if ((positions[0])[0] == 124) {//if pipe is in positions
 				int f=0;
 				f=fork();
 				if(!f) {//Child
@@ -89,7 +89,7 @@ int main_exec(char ** args,char * in_string){
 
 		}
 
-		else {
+		else {//double redirect is  a corner case
 			int f=0;
 			f=fork();
 			if (!f) {
