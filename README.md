@@ -39,7 +39,7 @@ Team FVY
 
 ### Files & Function Headers:
 #### exec.c
-* Handles the execution of functions
+* Handles the parsing and execution of input
 ```
 /*======== char **parse_args()==========
 Inputs: char **return_args
@@ -74,7 +74,7 @@ Puts nulls at terminating whitespaces and moves the pointer forward for whitespa
 
 ```
 #### redirect.c
-* Handles
+* Handles all redirection and piping 
 ```
 /*========char **redir_parse()==========
 Inputs: char **original_args
@@ -147,6 +147,7 @@ Opens an unnamed pipe and then forks the process and uses said pipe to read and 
 ```
 
 #### main.c
+* The main loop of the program
 ```
 /*========int main()==========
 Input: None
