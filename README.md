@@ -2,7 +2,7 @@
 by Francesco Siniscalco, Vladislav Vostrikov and Yulin Zheng 
 Team FVY
 
-###Features:
+### Features:
 - Can fork and execute commands 
     - Allows for changing of work directory (cd) and exiting (exit)
     - Allows for putting multiple spaces between arguments
